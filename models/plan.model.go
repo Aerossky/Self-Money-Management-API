@@ -1,34 +1,34 @@
 package models
 
 import (
-	"database/sql"
-	"fmt"
+	// "database/sql"
+	// "fmt"
 	"net/http"
 	"self_money_management_api_golang/db"
-	"self_money_management_api_golang/helpers"
 
+	// "self_money_management_api_golang/helpers"
 	"github.com/go-playground/validator/v10"
 )
 
-type User struct {
-	Id       int    `json:"id"` // tag json digunakan untuk menentukan nama field yang akan di tampilkan di response
-	Email    string `json:"email" validate:"required,email"`
-	Username string `json:"username" validate:"required"`
-	Image    string `json:"image" validate:"required"`
-	Password string `json:"password" validate:"required"`
+type Plan struct {
+	Id     int    `json:"id"`
+	IdUser int    `json:"id_user"`
+	Name   string `json:"name" validate:"required"`
+	Price  int    `json:"price" validate:"required"`
+	Time   int    `json:"time" validate:"required"`
 }
 
 //! CRUD START
 
-func FetchAllUser() (Response, error) {
-	var obj User
-	// digunakan untuk menampung data user
-	var arrObj []User
+func FetchAllPlan() (Response, error) {
+	var obj Plan
+	// digunakan untuk menampung data Plan
+	var arrObj []Plan
 	var res Response
 
 	con := db.Createcon()
 
-	sqlStatement := "SELECT * FROM users"
+	sqlStatement := "SELECT * FROM plans"
 
 	rows, err := con.Query(sqlStatement)
 
@@ -42,7 +42,7 @@ func FetchAllUser() (Response, error) {
 
 	// looping untuk menampung data user, lalu di cek apakah ada error
 	for rows.Next() {
-		err = rows.Scan(&obj.Id, &obj.Email, &obj.Username, &obj.Password)
+		err = rows.Scan(&obj.Id, &obj.IdUser, &obj.Name, &obj.Price, &obj.Time)
 
 		if err != nil {
 			return res, err
@@ -58,23 +58,22 @@ func FetchAllUser() (Response, error) {
 	return res, nil
 }
 
-// insert data user
-func StoreUser(id int, email string, username string, image string, password string) (Response, error) {
+// insert data plan
+func StorePlan(id_user int, name string, price int, time int) (Response, error) {
 	var res Response
 
 	// !validasi
 
 	v := validator.New()
 
-	usr := User{
-		Id:       id,
-		Email:    email,
-		Username: username,
-		Image:    image,
-		Password: password,
+	pln := Plan{
+		IdUser: id_user,
+		Name:   name,
+		Price:  price,
+		Time:   time,
 	}
 
-	err := v.Struct(usr)
+	err := v.Struct(pln)
 	if err != nil {
 		res.Status = http.StatusBadRequest
 		res.Message = "Error"
@@ -86,7 +85,7 @@ func StoreUser(id int, email string, username string, image string, password str
 
 	con := db.Createcon()
 
-	sqlStatement := "INSERT INTO `users`(`id`, `email`, `username`,`image`, `password`) VALUES (?,?,?,?,?)"
+	sqlStatement := "INSERT INTO `plans`(`id_user`, `name`, `price`, `time`) VALUES (?,?,?,?)"
 	stmt, err := con.Prepare(sqlStatement)
 
 	if err != nil {
@@ -98,7 +97,7 @@ func StoreUser(id int, email string, username string, image string, password str
 		return res, err
 	}
 
-	result, err := stmt.Exec(id, email, username, image, password)
+	result, err := stmt.Exec(id_user, name, price, time)
 
 	if err != nil {
 		res.Message = "Error"
@@ -125,12 +124,12 @@ func StoreUser(id int, email string, username string, image string, password str
 
 // func update user
 
-func UpdateUser(id int, email string, username string, image string, password string) (Response, error) {
+func UpdatePlan(id int, name string, price int, time int) (Response, error) {
 	var res Response
 
 	con := db.Createcon()
 
-	sqlStatement := "UPDATE users SET email=?,username=?,image=?,password=? WHERE id=?"
+	sqlStatement := "UPDATE plans SET name=?,price=?,time=? WHERE id=?"
 
 	stmt, err := con.Prepare(sqlStatement)
 
@@ -138,7 +137,7 @@ func UpdateUser(id int, email string, username string, image string, password st
 		return res, err
 	}
 
-	result, err := stmt.Exec(email, username, image, password, id)
+	result, err := stmt.Exec(name, price, time, id)
 
 	if err != nil {
 		return res, err
@@ -160,12 +159,12 @@ func UpdateUser(id int, email string, username string, image string, password st
 }
 
 // func delete user
-func DeleteUser(id string) (Response, error) {
+func DeletePlan(id int) (Response, error) {
 	var res Response
 
 	con := db.Createcon()
 
-	sqlStatement := "DELETE FROM users WHERE id=?"
+	sqlStatement := "DELETE FROM plans WHERE id=?"
 	stmt, err := con.Prepare(sqlStatement)
 
 	if err != nil {
@@ -193,37 +192,37 @@ func DeleteUser(id string) (Response, error) {
 
 }
 
-// !CRUD END
+func FetchPlanById(id string) (Response, error) {
+	var obj Plan
+	var arrObj []Plan
+	var res Response
 
-// !VALIDATION START
-// check login
-func CheckLogin(email, password string) (bool, error) {
-	var obj User
-	var pwd string
 	con := db.Createcon()
 
-	sqlStatement := "SELECT * FROM users WHERE email = ?"
-	err := con.QueryRow(sqlStatement, email).Scan(
-		&obj.Id, &obj.Email, &obj.Username, &obj.Image, &pwd,
-	)
+	sqlStatement := "SELECT * FROM plans WHERE id_user = ?"
 
-	if err == sql.ErrNoRows {
-		fmt.Print("Email not found!")
-		return false, err
-	}
+	rows, err := con.Query(sqlStatement, id)
+
+	defer rows.Close()
 
 	if err != nil {
-		fmt.Print("Query error!")
-		return false, err
+		return res, err
 	}
 
-	match, err := helpers.CheckPasswordHash(password, pwd)
-	if !match {
-		fmt.Print("Hash and password doesn't match!")
-		return false, err
+	for rows.Next() {
+		err = rows.Scan(&obj.Id, &obj.IdUser, &obj.Name, &obj.Price, &obj.Time)
+
+		if err != nil {
+			return res, err
+		}
+
+		arrObj = append(arrObj, obj)
 	}
 
-	return true, nil
+	res.Status = http.StatusOK
+	res.Message = "Success"
+	res.Data = arrObj
+
+	return res, nil
 }
 
-// !VALIDATION END

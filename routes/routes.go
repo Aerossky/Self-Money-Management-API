@@ -35,6 +35,19 @@ func Init() *echo.Echo {
 	e.PATCH("/user", controllers.UpdateUser)
 	e.DELETE("/user", controllers.DeleteUser)
 
+	// plan
+	e.GET("/plan", controllers.FetchAllPlan)
+	e.GET("/plan/:id", controllers.FetchPlanById)
+	e.POST("/plan", controllers.StorePlan)
+	e.PATCH("/plan", controllers.UpdatePlan)
+	e.DELETE("/plan", controllers.DeletePlan)
+
+	//money
+	e.GET("/money/:id", controllers.FetchMoneyById)
+	e.GET("/moneyTotalPemasukan/:id", controllers.FetchTotalPemasukanById)
+	e.GET("/moneyTotalPengeluaran/:id", controllers.FetchTotalPengeluaranById)
+	e.PATCH("/money", controllers.UpdateMoney)
+	e.DELETE("/money", controllers.DeleteMoney)
 	// validation
 	e.POST("/test-validation", controllers.TestStructValidation)
 	e.POST("/test-validation-var", controllers.TestVarValidation)

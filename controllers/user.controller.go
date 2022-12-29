@@ -26,12 +26,13 @@ func FetchAllUser(c echo.Context) error {
 }
 
 func StoreUser(c echo.Context) error {
-	id := c.FormValue("id")
+	id := helpers.ConvertStringToInt(c.FormValue("id"))
 	email := c.FormValue("email")
 	username := c.FormValue("username")
+	image := c.FormValue("image")
 	password, _ := helpers.HashPassword(c.FormValue("password"))
 
-	result, err := models.StoreUser(id, email, username, password)
+	result, err := models.StoreUser(id, email, username, image, password)
 
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, result)
@@ -43,12 +44,13 @@ func StoreUser(c echo.Context) error {
 
 func UpdateUser(c echo.Context) error {
 
-	id := c.FormValue("id")
+	id := helpers.ConvertStringToInt(c.FormValue("id"))
 	email := c.FormValue("email")
 	username := c.FormValue("username")
+	image := c.FormValue("image")
 	password, _ := helpers.HashPassword(c.FormValue("password"))
 
-	result, err := models.UpdateUser(id, email, username, password)
+	result, err := models.UpdateUser(id, email, username, image, password)
 
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError,
