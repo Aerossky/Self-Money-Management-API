@@ -5,6 +5,8 @@ import (
 	"self_money_management_api_golang/helpers"
 	"self_money_management_api_golang/models"
 
+	"io/ioutil"
+
 	"github.com/labstack/echo/v4"
 	// "time"
 	// "github.com/dgrijalva/jwt-go"
@@ -60,7 +62,7 @@ func FetchTotalPengeluaranById(c echo.Context) error {
 func UpdateMoney(c echo.Context) error {
 
 	id := helpers.ConvertStringToInt(c.FormValue("id"))
-	total_money :=helpers.ConvertStringToInt(c.FormValue("total_money"))
+	total_money := helpers.ConvertStringToInt(c.FormValue("total_money"))
 	note := c.FormValue("note")
 	status := c.FormValue("status")
 
@@ -88,4 +90,52 @@ func DeleteMoney(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, result)
 
+}
+
+// ! data by id
+func FetchDataPemasukanByUserId(c echo.Context) error {
+
+	id := c.Param("id")
+
+	result, err := models.FetchDataPemasukanByUserId(id)
+
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError,
+			map[string]string{"message": err.Error()})
+	}
+
+	return c.JSON(http.StatusOK, result)
+
+}
+
+func FetchDataPengeluaranByUserId(c echo.Context) error {
+
+	id := c.Param("id")
+
+	result, err := models.FetchDataPengeluaranByUserId(id)
+
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError,
+			map[string]string{"message": err.Error()})
+	}
+
+	return c.JSON(http.StatusOK, result)
+
+}
+
+func FetchMoneyAPI(c echo.Context) error {
+	// Make the request
+	response, err := http.Post("https://api.frankfurter.app/latest?amount=10000&base=IDR", "application/json", c.Request().Body)
+	if err != nil {
+		return err
+	}
+	defer response.Body.Close()
+
+	// Read the response
+	data, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		return err
+	}
+
+	return c.String(http.StatusOK, string(data))
 }

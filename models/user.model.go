@@ -42,7 +42,7 @@ func FetchAllUser() (Response, error) {
 
 	// looping untuk menampung data user, lalu di cek apakah ada error
 	for rows.Next() {
-		err = rows.Scan(&obj.Id, &obj.Email, &obj.Username, &obj.Password)
+		err = rows.Scan(&obj.Id, &obj.Email, &obj.Username,&obj.Image, &obj.Password)
 
 		if err != nil {
 			return res, err

@@ -48,6 +48,11 @@ func Init() *echo.Echo {
 	e.GET("/moneyTotalPengeluaran/:id", controllers.FetchTotalPengeluaranById)
 	e.PATCH("/money", controllers.UpdateMoney)
 	e.DELETE("/money", controllers.DeleteMoney)
+	e.GET("/currency", controllers.FetchMoneyAPI)
+	//1pemasukan
+	e.GET("/moneyPemasukan/:id", controllers.FetchDataPemasukanByUserId)
+	e.GET("/moneyPengeluaran/:id", controllers.FetchDataPengeluaranByUserId)
+
 	// validation
 	e.POST("/test-validation", controllers.TestStructValidation)
 	e.POST("/test-validation-var", controllers.TestVarValidation)

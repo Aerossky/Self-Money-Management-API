@@ -129,6 +129,7 @@ func DeleteMoney(id int) (Response, error) {
 	return res, nil
 
 }
+
 // func update user
 
 func UpdateMoney(id int, total_money int, note string, status string) (Response, error) {
@@ -163,4 +164,73 @@ func UpdateMoney(id int, total_money int, note string, status string) (Response,
 
 	return res, nil
 
+}
+
+// get data pemasukan by user id
+func FetchDataPemasukanByUserId(id string) (Response, error) {
+	var obj Money
+	var arrObj []Money
+	var res Response
+
+	con := db.Createcon()
+
+	sqlStatement := "SELECT * FROM moneys WHERE id_user = ? AND status = 'pemasukan' "
+
+	rows, err := con.Query(sqlStatement, id)
+
+	defer rows.Close()
+
+	if err != nil {
+		return res, err
+	}
+
+	for rows.Next() {
+		err = rows.Scan(&obj.Id, &obj.IdUser, &obj.TotalMoney, &obj.Note, &obj.Status)
+
+		if err != nil {
+			return res, err
+		}
+
+		arrObj = append(arrObj, obj)
+	}
+
+	res.Status = http.StatusOK
+	res.Message = "Success"
+	res.Data = arrObj
+
+	return res, nil
+}
+
+func FetchDataPengeluaranByUserId(id string) (Response, error) {
+	var obj Money
+	var arrObj []Money
+	var res Response
+
+	con := db.Createcon()
+
+	sqlStatement := "SELECT * FROM moneys WHERE id_user = ? AND status = 'pengeluaran' "
+
+	rows, err := con.Query(sqlStatement, id)
+
+	defer rows.Close()
+
+	if err != nil {
+		return res, err
+	}
+
+	for rows.Next() {
+		err = rows.Scan(&obj.Id, &obj.IdUser, &obj.TotalMoney, &obj.Note, &obj.Status)
+
+		if err != nil {
+			return res, err
+		}
+
+		arrObj = append(arrObj, obj)
+	}
+
+	res.Status = http.StatusOK
+	res.Message = "Success"
+	res.Data = arrObj
+
+	return res, nil
 }

@@ -225,4 +225,3 @@ func FetchPlanById(id string) (Response, error) {
 
 	return res, nil
 }
-
