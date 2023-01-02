@@ -23,7 +23,7 @@ func Init() *echo.Echo {
 		return c.String(http.StatusOK, "Hello, this is user!")
 	})
 
-	e.GET("/user/:name", getUser)
+	// e.GET("/user/:name", getUser)
 
 	// login
 	e.POST("/login", controllers.CheckLogin)
@@ -34,7 +34,7 @@ func Init() *echo.Echo {
 	e.POST("/user", controllers.StoreUser)
 	e.PATCH("/user", controllers.UpdateUser)
 	e.DELETE("/user", controllers.DeleteUser)
-	e.POST("/user/:id", controllers.FetchUserById)
+	e.GET("/user/:id", controllers.FetchUserById)
 
 	// plan
 	e.GET("/plan", controllers.FetchAllPlan)
