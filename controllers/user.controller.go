@@ -5,11 +5,10 @@ import (
 	"self_money_management_api_golang/helpers"
 	"self_money_management_api_golang/models"
 
+	// "github.com/go-playground/validator/translations/id"
 	"github.com/labstack/echo/v4"
-
-	"time"
-
-	"github.com/dgrijalva/jwt-go"
+	// "time"
+	// "github.com/dgrijalva/jwt-go"
 )
 
 func FetchAllUser(c echo.Context) error {
@@ -76,57 +75,39 @@ func DeleteUser(c echo.Context) error {
 
 }
 
-// func CheckLogin(c echo.Context) error {
-// 	email := c.FormValue("email")
-// 	password := c.FormValue("password")
-
-// 	res, err := models.CheckLogin(email, password)
-
-// 	if err != nil {
-// 		return c.JSON(http.StatusInternalServerError,
-// 			map[string]string{"message": err.Error()})
-// 	}
-
-// 	if !res {
-// 		return echo.ErrUnauthorized
-// 	}
-
-// 	return c.JSON(http.StatusOK,
-// 		map[string]string{
-// 			"message": "login success",
-// 			// "token":   mytoken,
-// 		})
-// }
-
+// function checklogin and get user id from model checklogin without token
 func CheckLogin(c echo.Context) error {
 	email := c.FormValue("email")
 	password := c.FormValue("password")
 
-	res, err := models.CheckLogin(email, password)
+	result, err := models.CheckLogin(email, password)
+
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError,
 			map[string]string{"message": err.Error()})
 	}
 
-	if !res {
-		return echo.ErrUnauthorized
-	}
-
-	// generate token
-	token := jwt.New(jwt.SigningMethodHS256)
-	claims := token.Claims.(jwt.MapClaims)
-	claims["email"] = email
-	claims["level"] = "application"
-	claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
-
-	mytoken, err := token.SignedString([]byte("secret"))
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError,
-			map[string]string{"message": err.Error()})
-	}
+	//make return data to json
 	return c.JSON(http.StatusOK,
-		map[string]string{
+		map[string]interface{}{
+			"user_id": result,
 			"message": "login success",
-			"token":   mytoken,
 		})
+
+}
+
+// function get user data from id
+func FetchUserById(c echo.Context) error {
+
+	id := c.Param("id")
+
+	result, err := models.FetchUserById(id)
+
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError,
+			map[string]string{"message": err.Error()})
+	}
+
+	return c.JSON(http.StatusOK, result)
+
 }

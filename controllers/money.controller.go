@@ -125,7 +125,8 @@ func FetchDataPengeluaranByUserId(c echo.Context) error {
 
 func FetchMoneyAPI(c echo.Context) error {
 	// Make the request
-	response, err := http.Post("https://api.frankfurter.app/latest?amount=10000&base=IDR", "application/json", c.Request().Body)
+	// response, err := http.Post("https://api.frankfurter.app/latest?amount=10000&base=IDR", "application/json", c.Request().Body)
+	response, err := http.Post("https://api.frankfurter.app/", "application/json", c.Request().Body)
 	if err != nil {
 		return err
 	}

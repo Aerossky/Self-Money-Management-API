@@ -42,7 +42,7 @@ func FetchAllUser() (Response, error) {
 
 	// looping untuk menampung data user, lalu di cek apakah ada error
 	for rows.Next() {
-		err = rows.Scan(&obj.Id, &obj.Email, &obj.Username,&obj.Image, &obj.Password)
+		err = rows.Scan(&obj.Id, &obj.Email, &obj.Username, &obj.Image, &obj.Password)
 
 		if err != nil {
 			return res, err
@@ -196,34 +196,118 @@ func DeleteUser(id string) (Response, error) {
 // !CRUD END
 
 // !VALIDATION START
-// check login
-func CheckLogin(email, password string) (bool, error) {
+// check login and return user
+// func CheckLogin(email, password string) (bool, error) {
+// 	var obj User
+// 	var pwd string
+// 	con := db.Createcon()
+
+// 	sqlStatement := "SELECT * FROM users WHERE email = ?"
+// 	err := con.QueryRow(sqlStatement, email).Scan(
+// 		&obj.Id, &obj.Email, &obj.Username, &obj.Image, &pwd,
+// 	)
+
+// 	if err == sql.ErrNoRows {
+// 		fmt.Print("Email not found!")
+// 		return false, err
+// 	}
+
+// 	if err != nil {
+// 		fmt.Print("Query error!")
+// 		return false, err
+// 	}
+
+// 	match, err := helpers.CheckPasswordHash(password, pwd)
+// 	if !match {
+// 		fmt.Print("Hash and password doesn't match!")
+// 		return false, err
+// 	}
+
+// 	return true, nil
+// }
+
+// check login and return user id
+func CheckLogin(email, password string) (int, error) {
 	var obj User
 	var pwd string
+	var id int
 	con := db.Createcon()
 
 	sqlStatement := "SELECT * FROM users WHERE email = ?"
 	err := con.QueryRow(sqlStatement, email).Scan(
-		&obj.Id, &obj.Email, &obj.Username, &obj.Image, &pwd,
+		&id, &obj.Email, &obj.Username, &obj.Image, &pwd,
 	)
 
 	if err == sql.ErrNoRows {
 		fmt.Print("Email not found!")
-		return false, err
+		return 0, err
 	}
 
 	if err != nil {
 		fmt.Print("Query error!")
-		return false, err
+		return 0, err
 	}
 
 	match, err := helpers.CheckPasswordHash(password, pwd)
 	if !match {
 		fmt.Print("Hash and password doesn't match!")
-		return false, err
+		return 0, err
 	}
 
-	return true, nil
+	return id, nil
 }
 
 // !VALIDATION END
+
+// Get user by id
+// func FetchUserById(id string) (Response, error) {
+// 	var obj User
+// 	var arrObj []User
+// 	var res Response
+
+// 	con := db.Createcon()
+
+// 	sqlStatement := "SELECT * FROM users WHERE id = ?"
+
+// 	rows, err := con.Query(sqlStatement, id)
+
+// 	defer rows.Close()
+
+// 	if err != nil {
+// 		return res, err
+// 	}
+
+// 	for rows.Next() {
+// 		err = rows.Scan(&obj.Id, &obj.Email, &obj.Username, &obj.Image, &obj.Password)
+
+// 		if err != nil {
+// 			return res, err
+// 		}
+
+// 		arrObj = append(arrObj, obj)
+// 	}
+
+
+	
+
+// 	return res, nil
+// }
+
+
+func FetchUserById(id string) (User, error) {
+    var obj User
+
+    con := db.Createcon()
+
+    sqlStatement := "SELECT * FROM users WHERE id = ?"
+
+    rows := con.QueryRow(sqlStatement, id)
+
+    err := rows.Scan(&obj.Id, &obj.Email, &obj.Username, &obj.Image, &obj.Password)
+
+    if err != nil {
+        return obj, err
+    }
+
+    return obj, nil
+}
