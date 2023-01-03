@@ -23,7 +23,7 @@ func Init() *echo.Echo {
 		return c.String(http.StatusOK, "Hello, this is user!")
 	})
 
-	e.GET("/user/:name", getUser)
+	// e.GET("/user/:name", getUser)
 
 	// login
 	e.POST("/login", controllers.CheckLogin)
