@@ -12,10 +12,10 @@ import (
 
 type User struct {
 	Id       int    `json:"id"` // tag json digunakan untuk menentukan nama field yang akan di tampilkan di response
-	Email    string `json:"email" validate:"required,email"`
-	Username string `json:"username" validate:"required"`
-	Image    string `json:"image" validate:"required"`
-	Password string `json:"password" validate:"required"`
+	Email    string `json:"email"`
+	Username string `json:"username"`
+	Image    string `json:"image"`
+	Password string `json:"password"`
 }
 
 //! CRUD START
