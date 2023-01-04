@@ -16,6 +16,7 @@ type User struct {
 	Username string `json:"username"`
 	Image    string `json:"image"`
 	Password string `json:"password"`
+	PasswordLama string 
 }
 
 //! CRUD START

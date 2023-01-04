@@ -53,6 +53,7 @@ func Init() *echo.Echo {
 	//1pemasukan
 	e.GET("/moneyPemasukan/:id", controllers.FetchDataPemasukanByUserId)
 	e.GET("/moneyPengeluaran/:id", controllers.FetchDataPengeluaranByUserId)
+	e.POST("/pemasukan", controllers.StorePepe)
 
 	// validation
 	e.POST("/test-validation", controllers.TestStructValidation)

@@ -140,3 +140,19 @@ func FetchMoneyAPI(c echo.Context) error {
 
 	return c.String(http.StatusOK, string(data))
 }
+
+func StorePepe(c echo.Context) error {
+	id_user := helpers.ConvertStringToInt(c.FormValue("id_user"))
+	totalmoney := helpers.ConvertStringToInt(c.FormValue("total_money"))
+	note := c.FormValue("note")
+	status :=  c.FormValue("status")
+	result, err := models.StorePepe(id_user, totalmoney, note, status)
+
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, result)
+	}
+
+	return c.JSON(http.StatusOK, result)
+
+}
+
