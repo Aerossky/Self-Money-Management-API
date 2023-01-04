@@ -13,9 +13,9 @@ import (
 type Plan struct {
 	Id     int    `json:"id"`
 	IdUser int    `json:"id_user"`
-	Name   string `json:"name" validate:"required"`
-	Price  int    `json:"price" validate:"required"`
-	Time   int    `json:"time" validate:"required"`
+	Name   string `json:"name" `
+	Price  int    `json:"price" `
+	Time   int    `json:"time" `
 }
 
 //! CRUD START
