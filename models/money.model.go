@@ -53,6 +53,7 @@ func FetchMoneyById(id string) (Response, error) {
 }
 
 // !total
+
 func FetchTotalPemasukanById(id string) (Response, error) {
 	var obj Money
 	var res Response
@@ -235,6 +236,61 @@ func FetchDataPengeluaranByUserId(id string) (Response, error) {
 	return res, nil
 }
 
+// func FetchTotalMoneyByUserId(id string) (Response, error) {
+// 	var obj Money
+// 	var arrObj []Money
+// 	var res Response
+
+// 	con := db.Createcon()
+
+// 	sqlStatement := "SELECT SUM(CASE WHEN status = 'Pemasukan' AND id_user = ? THEN total_money ELSE 0 END) - SUM(CASE WHEN status = 'Pengeluaran' AND id_user = ? THEN total_money ELSE 0 END) AS total FROM moneys"
+
+// 	rows, err := con.Query(sqlStatement, id)
+
+// 	defer rows.Close()
+
+// 	if err != nil {
+// 		return res, err
+// 	}
+
+// 	for rows.Next() {
+// 		err = rows.Scan(&obj.Id, &obj.IdUser, &obj.TotalMoney, &obj.Note, &obj.Status)
+
+// 		if err != nil {
+// 			return res, err
+// 		}
+
+// 		arrObj = append(arrObj, obj)
+// 	}
+
+// 	res.Status = http.StatusOK
+// 	res.Message = "Success"
+// 	res.Data = arrObj
+
+// 	return res, nil
+// }
+
+func FetchTotalMoneyByUserId(id string) (Response, error) {
+	var obj Money
+	var res Response
+
+	con := db.Createcon()
+
+	sqlStatement := "SELECT SUM(CASE WHEN status = 'Pemasukan' THEN total_money ELSE 0 END) - SUM(CASE WHEN status = 'Pengeluaran' THEN total_money ELSE 0 END) AS total FROM moneys WHERE id_user = ?"
+
+	err := con.QueryRow(sqlStatement, id).Scan(&obj.TotalMoney)
+
+	if err != nil {
+		return res, err
+	}
+
+	res.Status = http.StatusOK
+	res.Message = "Success"
+	res.Data = obj
+
+	return res, nil
+}
+
 // add money
 func StorePepe(id_user int, total_money int, note string, status string) (Response, error) {
 	var res Response
@@ -277,5 +333,3 @@ func StorePepe(id_user int, total_money int, note string, status string) (Respon
 	return res, nil
 
 }
-
-

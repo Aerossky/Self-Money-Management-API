@@ -54,6 +54,7 @@ func Init() *echo.Echo {
 	e.GET("/moneyPemasukan/:id", controllers.FetchDataPemasukanByUserId)
 	e.GET("/moneyPengeluaran/:id", controllers.FetchDataPengeluaranByUserId)
 	e.POST("/pemasukan", controllers.StorePepe)
+	e.GET("/moneyTotal/:id", controllers.FetchTotalMoneyByUserId)
 
 	// validation
 	e.POST("/test-validation", controllers.TestStructValidation)

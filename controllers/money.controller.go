@@ -29,6 +29,37 @@ func FetchMoneyById(c echo.Context) error {
 }
 
 // !total
+// func FetchTotalPemasukanById(c echo.Context) error {
+
+// 	id := c.Param("id")
+
+// 	result, err := models.FetchTotalPemasukanById(id)
+
+// 	if err != nil {
+// 		return c.JSON(http.StatusInternalServerError,
+// 			map[string]string{"message": err.Error()})
+// 	}
+
+// 	return c.JSON(http.StatusOK, result)
+
+// }
+
+// hitung jumlah uang
+func FetchTotalMoneyByUserId(c echo.Context) error {
+
+	id := c.Param("id")
+
+	result, err := models.FetchTotalMoneyByUserId(id)
+
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError,
+			map[string]string{"message": err.Error()})
+	}
+
+	return c.JSON(http.StatusOK, result)
+
+}
+
 func FetchTotalPemasukanById(c echo.Context) error {
 
 	id := c.Param("id")
@@ -145,7 +176,7 @@ func StorePepe(c echo.Context) error {
 	id_user := helpers.ConvertStringToInt(c.FormValue("id_user"))
 	totalmoney := helpers.ConvertStringToInt(c.FormValue("total_money"))
 	note := c.FormValue("note")
-	status :=  c.FormValue("status")
+	status := c.FormValue("status")
 	result, err := models.StorePepe(id_user, totalmoney, note, status)
 
 	if err != nil {
@@ -155,4 +186,3 @@ func StorePepe(c echo.Context) error {
 	return c.JSON(http.StatusOK, result)
 
 }
-
